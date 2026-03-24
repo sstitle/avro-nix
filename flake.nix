@@ -2,7 +2,7 @@
   description = "Development environment with nickel and mask";
 
   inputs = {
-    nixpkgs.url = "github:NixOS/nixpkgs/nixos-25.05";
+    nixpkgs.url = "github:NixOS/nixpkgs/nixos-25.11";
     flake-parts.url = "github:hercules-ci/flake-parts";
     treefmt-nix.url = "github:numtide/treefmt-nix";
   };
@@ -11,10 +11,12 @@
     inputs@{ self, flake-parts, ... }:
     flake-parts.lib.mkFlake { inherit inputs; } {
       systems = [
+        # keep-sorted start
         "x86_64-linux"
         "aarch64-linux"
         "x86_64-darwin"
         "aarch64-darwin"
+        # keep-sorted end
       ];
 
       perSystem =
@@ -30,25 +32,7 @@
           treefmtEval = inputs.treefmt-nix.lib.evalModule pkgs ./treefmt.nix;
         in
         {
-          # Development shell with nickel and mask
-          devShells.default = pkgs.mkShell {
-            buildInputs = with pkgs; [
-              # Core tools
-              git
-              mask
-              avro-tools
-            ];
-
-            shellHook = ''
-              echo "🚀 Development environment loaded!"
-              echo "Available tools:"
-              echo "  - nickel: Configuration language"
-              echo "  - mask: Task runner"
-              echo ""
-              echo "Run 'mask --help' to see available tasks."
-              echo "Run 'nix fmt' to format all files."
-            '';
-          };
+          devShells.default = import ./shell.nix { inherit pkgs; };
 
           # for `nix fmt`
           formatter = treefmtEval.config.build.wrapper;

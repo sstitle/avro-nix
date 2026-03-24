@@ -1,10 +1,10 @@
-# Project Name
+# avro-nix
 
 A Nix-based development environment with nickel and mask.
 
 <!-- mdformat-toc start --slug=github --no-anchors --maxlevel=6 --minlevel=1 -->
 
-- [Project Name](#project-name)
+- [avro-nix](#avro-nix)
   - [Getting Started](#getting-started)
     - [Prerequisites](#prerequisites)
     - [Quick Start](#quick-start)
