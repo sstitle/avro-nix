@@ -12,10 +12,10 @@
     flake-parts.lib.mkFlake { inherit inputs; } {
       systems = [
         # keep-sorted start
-        "x86_64-linux"
+        "aarch64-darwin"
         "aarch64-linux"
         "x86_64-darwin"
-        "aarch64-darwin"
+        "x86_64-linux"
         # keep-sorted end
       ];
 

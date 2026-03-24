@@ -1,5 +1,9 @@
-{ pkgs ? import <nixpkgs> { } }:
+{
+  pkgs ? import <nixpkgs> { },
+}:
 pkgs.mkShell {
+  name = "avro-nix";
+  
   buildInputs = with pkgs; [
     # Core tools
     git
