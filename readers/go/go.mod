@@ -1,4 +1,4 @@
-module github.com/example/read-item
+module github.com/example/avro-reader
 
 go 1.22
 

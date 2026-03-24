@@ -11,7 +11,7 @@ import (
 
 func main() {
 	if len(os.Args) < 2 {
-		pterm.Error.Println("Usage: read_item <file.avro>")
+		pterm.Error.Println("Usage: read <file.avro>")
 		os.Exit(1)
 	}
 
@@ -64,7 +64,7 @@ func main() {
 	}
 
 	pterm.Println()
-	pterm.DefaultHeader.WithFullWidth().Printf("Item Records")
+	pterm.DefaultHeader.WithFullWidth().Printf("Avro Records")
 	pterm.Println()
 	pterm.DefaultTable.WithHasHeader().WithBoxed().WithData(tableData).Render()
 	pterm.Println()

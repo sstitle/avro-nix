@@ -2,76 +2,58 @@
 
 This is a [mask](https://github.com/jacobdeichert/mask) task runner file.
 
-## hello
+## encode
 
-> This is an example command you can run with `mask hello`
-
-```bash
-echo "Hello World!"
-```
-
-## item-encode
-
-> Encode a JSON record into an Avro binary file. Usage: mask item-encode '{"id":"1","name":"Widget"}'
+> Encode a JSON record to Avro binary. Usage: mask encode --schema item --json '{"id":"1","name":"Widget"}'
 
 **OPTIONS**
+- schema
+  - flags: -s --schema
+  - type: string
+  - desc: Schema name (matches a file in models/)
 - json
   - flags: -j --json
   - type: string
   - desc: JSON record to encode
 
 ```bash
-[ -n "$json" ] || { echo "No JSON provided — usage: mask item-encode --json '{\"id\":\"1\",\"name\":\"Widget\"}'"; exit 1; }
-echo "$json" | avro-tools fromjson --schema-file models/item.avsc - > item.avro
-echo "Written to item.avro"
+[ -n "$schema" ] || { echo "No schema provided — use --schema <name>"; exit 1; }
+[ -n "$json" ] || { echo "No JSON provided — use --json '{...}'"; exit 1; }
+[ -f "models/$schema.avsc" ] || { echo "Schema not found: models/$schema.avsc"; exit 1; }
+echo "$json" | avro-tools fromjson --schema-file "models/$schema.avsc" - > "$schema.avro"
+echo "Written to $schema.avro"
 ```
 
-## item-decode
+## read
 
-> Decode item.avro back to JSON
-
-```bash
-[ -f item.avro ] || { echo "item.avro not found — run 'mask item-encode' first"; exit 1; }
-avro-tools tojson item.avro
-```
-
-## item-roundtrip-go
-
-> Encode a JSON record to Avro and read it back via Go
+> Read an Avro file with a language reader. Usage: mask read --schema item --lang go
 
 **OPTIONS**
-- json
-  - flags: -j --json
+- schema
+  - flags: -s --schema
   - type: string
-  - desc: JSON record to encode
-
-```bash
-[ -n "$json" ] || { echo "No JSON provided — usage: mask item-roundtrip-go --json '{\"id\":\"1\",\"name\":\"Widget\"}'"; exit 1; }
-echo "$json" | avro-tools fromjson --schema-file models/item.avsc - > item.avro
-cd scripts/go && go mod tidy && go run . "$OLDPWD/item.avro"
-```
-
-## item-roundtrip
-
-> Encode a JSON record to Avro and read it back via Python
-
-**OPTIONS**
-- json
-  - flags: -j --json
+  - desc: Schema name (matches a <schema>.avro file)
+- lang
+  - flags: -l --lang
   - type: string
-  - desc: JSON record to encode
+  - desc: Language reader to use (go, python)
 
 ```bash
-[ -n "$json" ] || { echo "No JSON provided — usage: mask item-roundtrip --json '{\"id\":\"1\",\"name\":\"Widget\"}'"; exit 1; }
-echo "$json" | avro-tools fromjson --schema-file models/item.avsc - > item.avro
-uv run scripts/read_item.py item.avro
-```
+[ -n "$schema" ] || { echo "No schema provided — use --schema <name>"; exit 1; }
+[ -n "$lang" ] || { echo "No lang provided — use --lang <go|python>"; exit 1; }
+[ -f "$schema.avro" ] || { echo "$schema.avro not found — run 'mask encode' first"; exit 1; }
+[ -d "readers/$lang" ] || { echo "No reader found for lang: $lang (add one in readers/$lang/)"; exit 1; }
 
-## item-schema
-
-> Print the embedded schema from item.avro
-
-```bash
-[ -f item.avro ] || { echo "item.avro not found — run 'mask item-encode' first"; exit 1; }
-avro-tools getschema item.avro
+case "$lang" in
+  go)
+    cd "readers/go" && go mod tidy && go run . "$OLDPWD/$schema.avro"
+    ;;
+  python)
+    uv run "readers/python/read.py" "$schema.avro"
+    ;;
+  *)
+    echo "Unknown lang: $lang"
+    exit 1
+    ;;
+esac
 ```
