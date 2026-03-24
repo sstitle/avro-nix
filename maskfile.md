@@ -35,6 +35,22 @@ echo "Written to item.avro"
 avro-tools tojson item.avro
 ```
 
+## item-roundtrip-go
+
+> Encode a JSON record to Avro and read it back via Go
+
+**OPTIONS**
+- json
+  - flags: -j --json
+  - type: string
+  - desc: JSON record to encode
+
+```bash
+[ -n "$json" ] || { echo "No JSON provided — usage: mask item-roundtrip-go --json '{\"id\":\"1\",\"name\":\"Widget\"}'"; exit 1; }
+echo "$json" | avro-tools fromjson --schema-file models/item.avsc - > item.avro
+cd scripts/go && go mod tidy && go run . "$OLDPWD/item.avro"
+```
+
 ## item-roundtrip
 
 > Encode a JSON record to Avro and read it back via Python

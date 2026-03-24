@@ -15,6 +15,7 @@ pkgs.mkShell {
     mask
     avro-tools-wrapped
     uv
+    go
   ];
 
   shellHook = ''
