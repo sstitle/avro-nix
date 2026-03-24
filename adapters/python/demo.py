@@ -1,7 +1,4 @@
 #!/usr/bin/env python3
-# /// script
-# dependencies = ["rich"]
-# ///
 """
 Illustrates hexagonal architecture dependency injection.
 
@@ -15,18 +12,14 @@ Usage:
 """
 
 import argparse
-import sys
-from pathlib import Path
-
-sys.path.insert(0, str(Path(__file__).parent))
 
 from rich.console import Console
 from rich.table import Table
 
-from item.memory import MemoryRepository
-from item.model import Item
-from item.repository import NotFound, Repository
-from item.rpc_client import RpcClient
+from avro_adapters.item.memory import MemoryRepository
+from avro_adapters.item.model import Item
+from avro_adapters.item.repository import NotFound, Repository
+from avro_adapters.item.rpc_client import RpcClient
 
 console = Console()
 

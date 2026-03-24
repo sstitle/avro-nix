@@ -1,4 +1,12 @@
 result*
 .direnv/
 scratchpad.md
+
+# Python
 __pycache__/
+*.pyc
+.venv/
+*.egg-info/
+
+# Go — vendor is managed by Nix (buildGoModule vendorHash), not committed
+adapters/go/vendor/

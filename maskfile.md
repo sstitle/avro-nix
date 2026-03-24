@@ -49,7 +49,7 @@ case "$lang" in
     cd "readers/go" && go mod tidy && go run . "$OLDPWD/$schema.avro"
     ;;
   python)
-    uv run "readers/python/read.py" "$schema.avro"
+    uv run "readers/python/read.py" "$OLDPWD/$schema.avro"
     ;;
   *)
     echo "Unknown lang: $lang"
@@ -83,10 +83,10 @@ addr="${addr:-localhost:8080}"
 
 case "$lang" in
   go)
-    cd "adapters/go" && go mod tidy && go run ./cmd/demo --adapter "$adapter" --addr "$addr"
+    cd "adapters/go" && go run ./cmd/demo --adapter "$adapter" --addr "$addr"
     ;;
   python)
-    uv run "adapters/python/demo.py" --adapter "$adapter" --addr "$addr"
+    cd "adapters/python" && uv run demo.py --adapter "$adapter" --addr "$addr"
     ;;
   *)
     echo "Unknown lang: $lang"
@@ -120,10 +120,10 @@ addr="${addr:-localhost:8080}"
 
 case "$lang" in
   go)
-    cd "adapters/go" && go mod tidy && go run ./cmd/server --adapter "$adapter" --addr "$addr"
+    cd "adapters/go" && go run ./cmd/server --adapter "$adapter" --addr "$addr"
     ;;
   python)
-    uv run "adapters/python/server.py" --adapter "$adapter" --addr "$addr"
+    cd "adapters/python" && uv run server.py --adapter "$adapter" --addr "$addr"
     ;;
   *)
     echo "Unknown lang: $lang"

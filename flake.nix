@@ -43,6 +43,21 @@
             backend = "memory";
           };
 
+          # Nix-built adapter packages. Both are sandboxed (no network at build time):
+          #   go-adapters     → item-demo, item-server  (from adapters/go/vendor/)
+          #   python-adapters → item-demo, item-server  (from pyproject.toml + setuptools)
+          packages = {
+            go-adapters = pkgs.callPackage ./nix/pkgs/go.nix {
+              # builtins.path renames the store entry; without this, the directory
+              # name "go" conflicts with buildGoModule's GOPATH and go.mod is ignored.
+              src = builtins.path {
+                path = ./adapters/go;
+                name = "avro-adapters-go-src";
+              };
+            };
+            python-adapters = pkgs.callPackage ./nix/pkgs/python.nix { src = ./adapters/python; };
+          };
+
           devShells.default = import ./shell.nix { inherit pkgs; };
           treefmt.config = import ./treefmt.nix;
         };

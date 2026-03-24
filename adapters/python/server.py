@@ -1,7 +1,4 @@
 #!/usr/bin/env python3
-# /// script
-# dependencies = []
-# ///
 """
 HTTP+JSON server exposing a Repository adapter.
 Routes mirror the messages in ports/item/repository.avpr.
@@ -12,15 +9,11 @@ Usage:
 
 import argparse
 import json
-import sys
 from http.server import BaseHTTPRequestHandler, HTTPServer
-from pathlib import Path
 
-sys.path.insert(0, str(Path(__file__).parent))
-
-from item.memory import MemoryRepository
-from item.model import Item
-from item.repository import NotFound
+from avro_adapters.item.memory import MemoryRepository
+from avro_adapters.item.model import Item
+from avro_adapters.item.repository import NotFound
 
 
 def make_handler(repo):

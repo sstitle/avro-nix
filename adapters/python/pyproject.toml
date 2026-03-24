@@ -1,0 +1,18 @@
+[project]
+name = "avro-adapters"
+version = "0.1.0"
+requires-python = ">=3.11"
+dependencies = ["rich>=13"]
+
+[project.scripts]
+item-demo = "demo:main"
+item-server = "server:main"
+
+[build-system]
+requires = ["setuptools>=68"]
+build-backend = "setuptools.build_meta"
+
+[tool.setuptools]
+# avro_adapters is the package namespace; demo and server are top-level entry modules.
+packages = ["avro_adapters", "avro_adapters.item"]
+py-modules = ["demo", "server"]
