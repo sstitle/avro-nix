@@ -1,0 +1,49 @@
+{
+  "protocol": "ItemRepository",
+  "namespace": "com.example.ports",
+  "doc": "Port: abstract CRUD interface for Item entities. Implementations are adapters.",
+  "types": [
+    {
+      "type": "record",
+      "name": "Item",
+      "namespace": "com.example",
+      "doc": "The Item domain entity.",
+      "fields": [
+        { "name": "id",   "type": "string", "doc": "Unique identifier." },
+        { "name": "name", "type": "string", "doc": "Display name." }
+      ]
+    },
+    {
+      "type": "error",
+      "name": "NotFound",
+      "namespace": "com.example.errors",
+      "doc": "Returned when no Item exists for the requested ID.",
+      "fields": [
+        { "name": "id", "type": "string" }
+      ]
+    }
+  ],
+  "messages": {
+    "get": {
+      "doc": "Retrieve an Item by ID. Errors if not found.",
+      "request": [{ "name": "id", "type": "string" }],
+      "response": "com.example.Item",
+      "errors": ["com.example.errors.NotFound"]
+    },
+    "list": {
+      "doc": "Retrieve all Items.",
+      "request": [],
+      "response": { "type": "array", "items": "com.example.Item" }
+    },
+    "save": {
+      "doc": "Persist an Item (insert or update).",
+      "request": [{ "name": "item", "type": "com.example.Item" }],
+      "response": "null"
+    },
+    "delete": {
+      "doc": "Remove an Item by ID. No-op if not found.",
+      "request": [{ "name": "id", "type": "string" }],
+      "response": "null"
+    }
+  }
+}

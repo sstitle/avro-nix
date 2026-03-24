@@ -57,3 +57,77 @@ case "$lang" in
     ;;
 esac
 ```
+
+## demo
+
+> Run the ItemRepository hexagonal demo (shows in-process DI). Usage: mask demo --lang go
+
+**OPTIONS**
+- lang
+  - flags: -l --lang
+  - type: string
+  - desc: Language adapter to use (go, python)
+- adapter
+  - flags: -a --adapter
+  - type: string
+  - desc: Adapter backend (memory, rpc) — default memory
+- addr
+  - flags: --addr
+  - type: string
+  - desc: RPC server address for --adapter rpc — default localhost:8080
+
+```bash
+[ -n "$lang" ] || { echo "No lang provided — use --lang <go|python>"; exit 1; }
+adapter="${adapter:-memory}"
+addr="${addr:-localhost:8080}"
+
+case "$lang" in
+  go)
+    cd "adapters/go" && go mod tidy && go run ./cmd/demo --adapter "$adapter" --addr "$addr"
+    ;;
+  python)
+    uv run "adapters/python/demo.py" --adapter "$adapter" --addr "$addr"
+    ;;
+  *)
+    echo "Unknown lang: $lang"
+    exit 1
+    ;;
+esac
+```
+
+## server
+
+> Start the ItemRepository HTTP+JSON server. Usage: mask server --lang go
+
+**OPTIONS**
+- lang
+  - flags: -l --lang
+  - type: string
+  - desc: Language adapter to use (go, python)
+- adapter
+  - flags: -a --adapter
+  - type: string
+  - desc: Adapter backend (memory) — default memory
+- addr
+  - flags: --addr
+  - type: string
+  - desc: Listen address — default localhost:8080
+
+```bash
+[ -n "$lang" ] || { echo "No lang provided — use --lang <go|python>"; exit 1; }
+adapter="${adapter:-memory}"
+addr="${addr:-localhost:8080}"
+
+case "$lang" in
+  go)
+    cd "adapters/go" && go mod tidy && go run ./cmd/server --adapter "$adapter" --addr "$addr"
+    ;;
+  python)
+    uv run "adapters/python/server.py" --adapter "$adapter" --addr "$addr"
+    ;;
+  *)
+    echo "Unknown lang: $lang"
+    exit 1
+    ;;
+esac
+```

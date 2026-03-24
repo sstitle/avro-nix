@@ -1,5 +1,5 @@
 {
-  description = "Development environment with nickel and mask";
+  description = "Hexagonal architecture with Avro ports and Nix-wired adapters";
 
   inputs = {
     nixpkgs.url = "github:NixOS/nixpkgs/nixos-25.11";
@@ -10,6 +10,13 @@
   outputs =
     inputs@{ self, flake-parts, ... }:
     flake-parts.lib.mkFlake { inherit inputs; } {
+      imports = [
+        inputs.treefmt-nix.flakeModule
+        # keep-sorted start
+        ./nix/modules/ports.nix
+        # keep-sorted end
+      ];
+
       systems = [
         # keep-sorted start
         "aarch64-darwin"
@@ -28,19 +35,16 @@
           system,
           ...
         }:
-        let
-          treefmtEval = inputs.treefmt-nix.lib.evalModule pkgs ./treefmt.nix;
-        in
         {
-          devShells.default = import ./shell.nix { inherit pkgs; };
-
-          # for `nix fmt`
-          formatter = treefmtEval.config.build.wrapper;
-
-          # for `nix flake check`
-          checks = {
-            formatting = treefmtEval.config.build.check self;
+          # Composition root: declare which adapter backs each Repository port.
+          # Change language or backend here — no application code changes.
+          ports.repositories.item = {
+            language = "go";
+            backend = "memory";
           };
+
+          devShells.default = import ./shell.nix { inherit pkgs; };
+          treefmt.config = import ./treefmt.nix;
         };
     };
 }
